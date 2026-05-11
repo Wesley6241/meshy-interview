@@ -14,6 +14,7 @@ import {
   type GenerationTask,
 } from "../shared/tracker";
 import { useTrackerState } from "../shared/useTrackerState";
+import { TaskProgressRing } from "../TaskProgressRing";
 
 function FloatingTracker({
   latestTask,
@@ -68,9 +69,7 @@ function FloatingTracker({
                 aria-valuenow={Math.round(latestProgress * 100)}
               />
             </div>
-            <div className="floatingStatusPercent">
-              {latestTask.status === "done" ? "100%" : `${Math.round(latestProgress * 100)}%`}
-            </div>
+            <div className="floatingStatusPercent">{getTaskTimingLabel(latestTask, now)}</div>
             <div className="floatingCompactTitle">{latestTask.title}</div>
           </div>
         </button>
@@ -94,12 +93,11 @@ function FloatingTracker({
                   .reverse()
                   .map((task) => (
                     <div key={task.id} className="floatingListItem">
-                      <div className="floatingListGlyph" />
-                      <div className="floatingListMeta">
-                        <div className="floatingListTitle">{task.title}</div>
-                        <div className="floatingListTime">{getTaskTimingLabel(task, now)}</div>
+                      <div className="floatingListTitle">{task.title}</div>
+                      <div className="floatingListProgressRow">
+                        <TaskProgressRing progress={getTaskProgress(task, now)} size="sm" />
+                        <span className="floatingListCompleteLabel">{getTaskTimingLabel(task, now)}</span>
                       </div>
-                      <div className="floatingListProgress">{Math.round(getTaskProgress(task, now) * 100)}%</div>
                     </div>
                   ))
               ) : (

@@ -110,7 +110,7 @@ button {
 .taskFooter,
 .toastText,
 .floatingSubtitle,
-.floatingListTime,
+.floatingListCompleteLabel,
 .compactHint,
 .emptySidebarState p,
 .otherCard p,
@@ -429,7 +429,6 @@ button {
 }
 
 .emptySidebarIcon,
-.floatingListGlyph,
 .previewGlyph,
 .toastBadge {
   border-radius: 50%;
@@ -512,7 +511,69 @@ button {
 .taskHeader,
 .taskFooter {
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
+}
+
+.taskFooter {
+  justify-content: flex-start;
+}
+
+.taskFooterComplete {
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.taskProgressRingWrap {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+
+.taskProgressRingWrap--sm .taskProgressRing {
+  width: 12px;
+  height: 12px;
+}
+
+.taskProgressRingWrap--sm .taskProgressRing::after {
+  inset: 2px;
+}
+
+.taskProgressRingWrap--md .taskProgressRing {
+  width: 20px;
+  height: 20px;
+}
+
+.taskProgressRingWrap--md .taskProgressRing::after {
+  inset: 5px;
+}
+
+.taskProgressRing {
+  --progress: 0;
+  position: relative;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    #ffffff calc(var(--progress) * 1turn),
+    rgba(255, 255, 255, 0.14) 0
+  );
+}
+
+.taskProgressRing::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #1f2228;
+}
+
+.popupTaskProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.popupTaskProgressRow .popupTaskMeta {
+  margin: 0;
 }
 
 .taskStatus {
@@ -665,10 +726,6 @@ button {
   font-size: 12px;
 }
 
-.floatingShell.isExpanded .floatingListTime {
-  font-size: 11px;
-}
-
 .floatingShell.isExpanded .floatingList {
   flex: 1 1 auto;
   min-height: 0;
@@ -680,24 +737,30 @@ button {
 }
 
 .floatingShell.isExpanded .floatingListItem {
-  grid-template-columns: 12px 1fr auto;
   gap: 5px;
   padding: 5px 6px;
   border-radius: 8px;
 }
 
-.floatingShell.isExpanded .floatingListMeta {
-  min-width: 0;
+.floatingShell.isExpanded .floatingListTitle {
   overflow-wrap: anywhere;
 }
 
-.floatingShell.isExpanded .floatingListGlyph {
-  width: 12px;
-  height: 12px;
+.floatingShell.isExpanded .floatingListProgressRow {
+  gap: 8px;
 }
 
-.floatingShell.isExpanded .floatingListProgress {
-  font-size: 14px;
+.floatingShell.isExpanded .floatingListCompleteLabel {
+  font-size: 11px;
+}
+
+.floatingShell.isExpanded .taskProgressRingWrap--sm .taskProgressRing {
+  width: 14px;
+  height: 14px;
+}
+
+.floatingShell.isExpanded .taskProgressRingWrap--sm .taskProgressRing::after {
+  inset: 3px;
 }
 
 .floatingShell.isExpanded .floatingEmptyState {
@@ -717,6 +780,7 @@ button {
   position: absolute;
   top: 3px;
   right: 3px;
+  z-index: 10;
   width: 11px;
   height: 11px;
   border: 1px solid var(--border);
@@ -806,7 +870,7 @@ button {
 .floatingCounter {
   position: absolute;
   top: 3px;
-  right: 3px;
+  right: 18px;
   z-index: 1;
   padding: 1px 3px;
   border-radius: 999px;
@@ -831,10 +895,6 @@ button {
   border: 1px solid var(--border);
 }
 
-.floatingListItem .floatingListMeta {
-  min-width: 0;
-}
-
 .floatingExpandedHeader {
   justify-content: space-between;
   align-items: flex-start;
@@ -855,10 +915,8 @@ button {
 .floatingShell .floatingListTitle {
   font-size: 8px;
   line-height: 1.25;
-}
-
-.floatingShell .floatingListTime {
-  font-size: 7px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .floatingList {
@@ -876,29 +934,29 @@ button {
 }
 
 .floatingListItem {
-  display: grid;
-  grid-template-columns: 8px 1fr auto;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px 5px;
 }
 
 .floatingShell .floatingListItem {
   border-radius: 5px;
 }
 
-.floatingListGlyph {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(45, 212, 191, 0.55), rgba(168, 85, 247, 0.5));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.floatingListProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
 }
 
-.floatingListProgress {
-  color: var(--accent-teal);
-  font-size: 9px;
-  font-weight: 600;
+.floatingListCompleteLabel {
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--text-soft);
+  line-height: 1.2;
 }
 
 .floatingEmptyState {

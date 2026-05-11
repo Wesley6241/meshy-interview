@@ -3,9 +3,11 @@ import { createTaskFromAnyContext, openMeshyPage, requestDueTaskSync } from "../
 import {
   getLatestActiveTask,
   getLatestTask,
+  getTaskProgress,
   getTaskTimingLabel,
   type GenerationTask,
 } from "../shared/tracker";
+import { TaskProgressRing } from "../TaskProgressRing";
 import { useTrackerState } from "../shared/useTrackerState";
 
 function PopupTaskSummary({ task, now }: { task: GenerationTask | null; now: number }) {
@@ -17,10 +19,15 @@ function PopupTaskSummary({ task, now }: { task: GenerationTask | null; now: num
     );
   }
 
+  const progress = getTaskProgress(task, now);
+
   return (
     <div className="popupTaskCard">
       <div className="popupTaskTitle">{task.title}</div>
-      <div className="popupTaskMeta">{getTaskTimingLabel(task, now)}</div>
+      <div className="popupTaskProgressRow">
+        <TaskProgressRing progress={progress} size="md" />
+        <div className="popupTaskMeta">{getTaskTimingLabel(task, now)}</div>
+      </div>
     </div>
   );
 }

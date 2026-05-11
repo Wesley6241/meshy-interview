@@ -16,6 +16,7 @@ import {
   type GenerationTask,
 } from "./shared/tracker";
 import { useTrackerState } from "./shared/useTrackerState";
+import { TaskProgressRing } from "./TaskProgressRing";
 
 function useTicker(stepMs = 1000) {
   const [now, setNow] = useState(() => Date.now());
@@ -304,8 +305,8 @@ function TaskCard({ task, now }: { task: GenerationTask; now: number }) {
           <span style={{ width: `${progress * 100}%` }} />
         </div>
         <div className="taskFooter">
-          <span>{getTaskTimingLabel(task, now)}</span>
-          <span>{Math.round(progress * 100)}%</span>
+          <TaskProgressRing progress={progress} size="md" />
+          <span className="taskFooterComplete">{getTaskTimingLabel(task, now)}</span>
         </div>
       </div>
     </article>
@@ -394,9 +395,7 @@ function FloatingTracker({
                 aria-valuenow={Math.round(latestProgress * 100)}
               />
             </div>
-            <div className="floatingStatusPercent">
-              {latestTask.status === "done" ? "100%" : `${Math.round(latestProgress * 100)}%`}
-            </div>
+            <div className="floatingStatusPercent">{getTaskTimingLabel(latestTask, now)}</div>
             <div className="floatingCompactTitle">{latestTask.title}</div>
           </div>
         </button>
@@ -422,12 +421,11 @@ function FloatingTracker({
                     const progress = getTaskProgress(task, now);
                     return (
                       <div key={task.id} className="floatingListItem">
-                        <div className="floatingListGlyph" />
-                        <div className="floatingListMeta">
-                          <div className="floatingListTitle">{task.title}</div>
-                          <div className="floatingListTime">{getTaskTimingLabel(task, now)}</div>
+                        <div className="floatingListTitle">{task.title}</div>
+                        <div className="floatingListProgressRow">
+                          <TaskProgressRing progress={progress} size="sm" />
+                          <span className="floatingListCompleteLabel">{getTaskTimingLabel(task, now)}</span>
                         </div>
-                        <div className="floatingListProgress">{Math.round(progress * 100)}%</div>
                       </div>
                     );
                   })

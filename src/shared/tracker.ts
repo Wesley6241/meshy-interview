@@ -128,18 +128,7 @@ export function getTaskProgress(task: GenerationTask, now: number) {
   return Math.min(1, Math.max(0.04, (now - task.createdAt) / task.durationMs));
 }
 
-export function formatDuration(ms: number) {
-  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
-
 export function getTaskTimingLabel(task: GenerationTask, now: number) {
-  if (task.status === "done") {
-    return "Ready in Meshy";
-  }
-
-  return `${formatDuration(task.targetCompleteAt - now)} remaining`;
+  const pct = Math.round(getTaskProgress(task, now) * 100);
+  return `${pct}% complete`;
 }

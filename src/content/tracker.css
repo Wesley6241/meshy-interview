@@ -34,7 +34,7 @@
 
 .contentTrackerRoot .eyebrow,
 .contentTrackerRoot .compactHint,
-.contentTrackerRoot .floatingListTime,
+.contentTrackerRoot .floatingListCompleteLabel,
 .contentTrackerRoot .floatingSubtitle {
   color: var(--text-soft);
 }
@@ -122,14 +122,6 @@
   font-size: 12px;
 }
 
-.contentTrackerRoot .floatingShell.isExpanded .floatingListTitle {
-  font-size: 12px;
-}
-
-.contentTrackerRoot .floatingShell.isExpanded .floatingListTime {
-  font-size: 11px;
-}
-
 .contentTrackerRoot .floatingShell.isExpanded .floatingList {
   flex: 1 1 auto;
   min-height: 0;
@@ -141,27 +133,31 @@
 }
 
 .contentTrackerRoot .floatingShell.isExpanded .floatingListItem {
-  grid-template-columns: 12px 1fr auto;
   gap: 5px;
   padding: 5px 6px;
   border-radius: 8px;
 }
 
-.contentTrackerRoot .floatingListItem .floatingListMeta {
-  min-width: 0;
-}
-
-.contentTrackerRoot .floatingShell.isExpanded .floatingListMeta {
+.contentTrackerRoot .floatingShell.isExpanded .floatingListTitle {
+  font-size: 12px;
   overflow-wrap: anywhere;
 }
 
-.contentTrackerRoot .floatingShell.isExpanded .floatingListGlyph {
-  width: 12px;
-  height: 12px;
+.contentTrackerRoot .floatingShell.isExpanded .floatingListProgressRow {
+  gap: 8px;
 }
 
-.contentTrackerRoot .floatingShell.isExpanded .floatingListProgress {
-  font-size: 14px;
+.contentTrackerRoot .floatingShell.isExpanded .floatingListCompleteLabel {
+  font-size: 11px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .taskProgressRingWrap--sm .taskProgressRing {
+  width: 14px;
+  height: 14px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .taskProgressRingWrap--sm .taskProgressRing::after {
+  inset: 3px;
 }
 
 .contentTrackerRoot .floatingShell.isExpanded .floatingEmptyState {
@@ -181,6 +177,7 @@
   position: absolute;
   top: 3px;
   right: 3px;
+  z-index: 10;
   width: 11px;
   height: 11px;
   border: 1px solid var(--border);
@@ -278,19 +275,10 @@
   line-height: 1.25;
 }
 
-.contentTrackerRoot .floatingListTitle {
-  font-size: 8px;
-  line-height: 1.25;
-}
-
-.contentTrackerRoot .floatingListTime {
-  font-size: 7px;
-}
-
 .contentTrackerRoot .floatingCounter {
   position: absolute;
   top: 3px;
-  right: 3px;
+  right: 18px;
   z-index: 1;
   padding: 1px 3px;
   border-radius: 999px;
@@ -330,28 +318,75 @@
 }
 
 .contentTrackerRoot .floatingListItem {
-  display: grid;
-  grid-template-columns: 8px 1fr auto;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px 5px;
   border: 1px solid var(--border);
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.02);
 }
 
-.contentTrackerRoot .floatingListGlyph {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(45, 212, 191, 0.55), rgba(168, 85, 247, 0.5));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.contentTrackerRoot .floatingListTitle {
+  font-size: 8px;
+  line-height: 1.25;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.contentTrackerRoot .floatingListProgress {
-  color: var(--accent-teal);
-  font-size: 9px;
-  font-weight: 600;
+.contentTrackerRoot .floatingListProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.contentTrackerRoot .floatingListCompleteLabel {
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.contentTrackerRoot .taskProgressRingWrap {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+
+.contentTrackerRoot .taskProgressRingWrap--sm .taskProgressRing {
+  width: 12px;
+  height: 12px;
+}
+
+.contentTrackerRoot .taskProgressRingWrap--sm .taskProgressRing::after {
+  inset: 2px;
+}
+
+.contentTrackerRoot .taskProgressRingWrap--md .taskProgressRing {
+  width: 20px;
+  height: 20px;
+}
+
+.contentTrackerRoot .taskProgressRingWrap--md .taskProgressRing::after {
+  inset: 5px;
+}
+
+.contentTrackerRoot .taskProgressRing {
+  --progress: 0;
+  position: relative;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    #ffffff calc(var(--progress) * 1turn),
+    rgba(255, 255, 255, 0.14) 0
+  );
+}
+
+.contentTrackerRoot .taskProgressRing::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #1a1a1a;
 }
 
 .contentTrackerRoot .floatingEmptyState {

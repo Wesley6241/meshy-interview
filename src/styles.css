@@ -111,7 +111,6 @@ button {
 .toastText,
 .floatingSubtitle,
 .floatingListCompleteLabel,
-.compactHint,
 .emptySidebarState p,
 .otherCard p,
 .otherPageHero p {
@@ -120,8 +119,7 @@ button {
 
 .brandSubtitle,
 .fieldLabel,
-.eyebrow,
-.compactHint {
+.eyebrow {
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -651,10 +649,10 @@ button {
   right: 16px;
   bottom: 16px;
   z-index: 35;
-  width: 83px;
-  padding: 3px;
+  width: 125px;
+  padding: 5px;
   isolation: isolate;
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -665,14 +663,24 @@ button {
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   box-shadow:
-    0 0 6px var(--figma-glow-lime),
-    0 0 10px var(--figma-glow-pink),
-    0 0 16px rgba(253, 157, 191, 0.22),
-    0 6px 14px rgba(0, 0, 0, 0.55);
+    0 0 9px var(--figma-glow-lime),
+    0 0 15px var(--figma-glow-pink),
+    0 0 24px rgba(253, 157, 191, 0.22),
+    0 9px 21px rgba(0, 0, 0, 0.55);
 }
 
 .floatingShell:not(.isExpanded) {
   cursor: pointer;
+}
+
+.floatingShell.isDragging {
+  cursor: grabbing;
+  touch-action: none;
+  user-select: none;
+}
+
+.floatingShell.isDragging * {
+  user-select: none;
 }
 
 .floatingShell.isExpanded {
@@ -687,6 +695,17 @@ button {
 .floatingShell.isExpanded .floatingMinimize {
   top: 6px;
   right: 6px;
+  width: 11px;
+  height: 11px;
+  font-size: 8px;
+}
+
+.floatingShell:not(.isExpanded) .floatingMinimize {
+  top: 5px;
+  right: 5px;
+  width: 17px;
+  height: 17px;
+  font-size: 12px;
 }
 
 .floatingShell.isExpanded .floatingExpandedFrame {
@@ -713,8 +732,7 @@ button {
   flex-shrink: 0;
 }
 
-.floatingShell.isExpanded .eyebrow,
-.floatingShell.isExpanded .compactHint {
+.floatingShell.isExpanded .eyebrow {
   font-size: 12px;
 }
 
@@ -807,9 +825,9 @@ button {
   flex: 1 1 auto;
   width: 100%;
   min-height: 0;
-  padding: 6px 5px 5px;
+  padding: 9px 8px 8px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  border-radius: 9px;
   color: inherit;
   text-align: center;
   background: #1a1a1a;
@@ -819,7 +837,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
 }
 
 .floatingStatusRingWrap {
@@ -829,8 +847,8 @@ button {
 .floatingStatusRing {
   --progress: 0;
   position: relative;
-  width: 14px;
-  height: 14px;
+  width: 21px;
+  height: 21px;
   border-radius: 50%;
   background: conic-gradient(
     from -90deg,
@@ -842,13 +860,13 @@ button {
 .floatingStatusRing::after {
   content: "";
   position: absolute;
-  inset: 2px;
+  inset: 3px;
   border-radius: 50%;
   background: #1a1a1a;
 }
 
 .floatingStatusPercent {
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: #c0d67a;
@@ -856,8 +874,8 @@ button {
 }
 
 .floatingCompactTitle {
-  max-width: 65px;
-  font-size: 8px;
+  max-width: 98px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.35;
   color: rgba(255, 255, 255, 0.38);
@@ -869,12 +887,12 @@ button {
 
 .floatingCounter {
   position: absolute;
-  top: 3px;
-  right: 18px;
+  top: 5px;
+  right: 27px;
   z-index: 1;
-  padding: 1px 3px;
+  padding: 2px 5px;
   border-radius: 999px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
   color: rgba(245, 245, 245, 0.45);
   background: rgba(255, 255, 255, 0.06);
@@ -901,8 +919,7 @@ button {
   gap: 3px;
 }
 
-.floatingShell .eyebrow,
-.floatingShell .compactHint {
+.floatingShell .eyebrow {
   font-size: 8px;
   letter-spacing: 0.04em;
 }
@@ -994,6 +1011,7 @@ button {
   top: 50%;
   right: 0;
   z-index: 34;
+  touch-action: none;
   display: flex;
   align-items: center;
   gap: 3px;
@@ -1011,6 +1029,11 @@ button {
     -2px 0 6px var(--figma-glow-lime),
     -1px 0 9px var(--figma-glow-pink),
     0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.edgeArrowTab.isDragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .edgeArrowGlyph {
@@ -1212,7 +1235,7 @@ button {
   .floatingShell {
     right: 10px;
     bottom: 10px;
-    width: min(calc(100vw - 20px), 83px);
+    width: min(calc(100vw - 20px), 125px);
   }
 
   .floatingShell.isExpanded {

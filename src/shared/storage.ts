@@ -14,6 +14,7 @@ function cloneState(state: TrackerState): TrackerState {
   return {
     ...state,
     tasks: state.tasks.map((task) => ({ ...task })),
+    floatingPosition: state.floatingPosition ? { ...state.floatingPosition } : null,
   };
 }
 
@@ -26,7 +27,12 @@ async function getSessionState() {
   const stored = result[TRACKER_STORAGE_KEY] as TrackerState | undefined;
 
   if (stored) {
-    return cloneState(stored);
+    return cloneState({
+      ...DEFAULT_TRACKER_STATE,
+      ...stored,
+      tasks: stored.tasks ?? [],
+      floatingPosition: stored.floatingPosition ?? null,
+    });
   }
 
   await chrome.storage.session.set({

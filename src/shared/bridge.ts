@@ -1,4 +1,4 @@
-import { createTask, type GenerationTask } from "./tracker";
+import { createTask, type FloatingPosition, type GenerationTask } from "./tracker";
 import { setTrackerState, updateTrackerState } from "./storage";
 import type { TrackerState } from "./tracker";
 
@@ -8,7 +8,8 @@ type ExtensionMessage =
   | { type: "SYNC_DUE_TASKS" }
   | { type: "GET_TRACKER_STATE" }
   | { type: "SET_TRACKER_MINIMIZED"; minimized: boolean }
-  | { type: "SET_FLOATING_EXPANDED"; expanded: boolean };
+  | { type: "SET_FLOATING_EXPANDED"; expanded: boolean }
+  | { type: "SET_FLOATING_POSITION"; position: FloatingPosition };
 
 const localTimeoutMap = new Map<string, number>();
 
@@ -112,11 +113,24 @@ export async function setFloatingExpanded(expanded: boolean) {
   }));
 }
 
+export async function setFloatingPosition(position: FloatingPosition) {
+  if (hasRuntime()) {
+    await sendMessage({ type: "SET_FLOATING_POSITION", position });
+    return;
+  }
+
+  await updateTrackerState((state) => ({
+    ...state,
+    floatingPosition: position,
+  }));
+}
+
 export async function resetTrackerUiState() {
   await setTrackerState({
     tasks: [],
     trackerMinimized: false,
     floatingExpanded: false,
+    floatingPosition: null,
     nextTaskNumber: 0,
   });
 }

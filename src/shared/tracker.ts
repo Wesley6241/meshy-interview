@@ -10,10 +10,16 @@ export interface GenerationTask {
   completedAt?: number;
 }
 
+export interface FloatingPosition {
+  left: number;
+  top: number;
+}
+
 export interface TrackerState {
   tasks: GenerationTask[];
   trackerMinimized: boolean;
   floatingExpanded: boolean;
+  floatingPosition: FloatingPosition | null;
   nextTaskNumber: number;
 }
 
@@ -33,6 +39,7 @@ export const DEFAULT_TRACKER_STATE: TrackerState = {
   tasks: [],
   trackerMinimized: false,
   floatingExpanded: false,
+  floatingPosition: null,
   nextTaskNumber: 0,
 };
 

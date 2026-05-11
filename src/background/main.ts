@@ -1,4 +1,10 @@
-import { TASK_ALARM_PREFIX, completeDueTasks, completeTask, createTask } from "../shared/tracker";
+import {
+  TASK_ALARM_PREFIX,
+  completeDueTasks,
+  completeTask,
+  createTask,
+  type FloatingPosition,
+} from "../shared/tracker";
 import { getTrackerState, setTrackerState } from "../shared/storage";
 
 const MESHY_PAGE_URL = chrome.runtime.getURL("index.html#/meshy");
@@ -145,6 +151,21 @@ chrome.runtime.onMessage.addListener((
         const nextState = {
           ...state,
           floatingExpanded: Boolean((message as { expanded?: boolean }).expanded),
+        };
+        await persistState(nextState);
+        sendResponse({ state: nextState });
+        return;
+      }
+      case "SET_FLOATING_POSITION": {
+        const state = await getTrackerState();
+        const position = (message as { position?: FloatingPosition }).position;
+        if (!position || typeof position.left !== "number" || typeof position.top !== "number") {
+          sendResponse({ ok: false });
+          return;
+        }
+        const nextState = {
+          ...state,
+          floatingPosition: { left: position.left, top: position.top },
         };
         await persistState(nextState);
         sendResponse({ state: nextState });

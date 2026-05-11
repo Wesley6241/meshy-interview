@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   createTaskFromAnyContext,
   openMeshyPage,
   requestDueTaskSync,
   setFloatingExpanded,
+  setFloatingPosition,
   setTrackerMinimized,
 } from "./shared/bridge";
 import {
@@ -13,8 +14,10 @@ import {
   getLatestTask,
   getTaskProgress,
   getTaskTimingLabel,
+  type FloatingPosition,
   type GenerationTask,
 } from "./shared/tracker";
+import { useDraggableFloatingPanel } from "./shared/useDraggableFloatingPanel";
 import { useTrackerState } from "./shared/useTrackerState";
 import { TaskProgressRing } from "./TaskProgressRing";
 
@@ -67,6 +70,10 @@ function AppShell() {
     }
   }, [isMeshyPage, location.pathname]);
 
+  const commitFloatingPosition = useCallback((position: FloatingPosition) => {
+    void setFloatingPosition(position);
+  }, []);
+
   return (
     <div className="appShell">
       <TopBar
@@ -111,6 +118,8 @@ function AppShell() {
           activeTasks={activeTasks}
           isExpanded={state.floatingExpanded}
           now={now}
+          floatingPosition={state.floatingPosition}
+          onFloatingPositionCommit={commitFloatingPosition}
           onExpand={() => void setFloatingExpanded(true)}
           onCollapse={() => void setFloatingExpanded(false)}
           onMinimize={() => void setTrackerMinimized(true)}
@@ -119,7 +128,12 @@ function AppShell() {
       ) : null}
 
       {shouldShowArrow ? (
-        <EdgeArrowTab activeCount={activeTasks.length} onRestore={() => void setTrackerMinimized(false)} />
+        <EdgeArrowTab
+          activeCount={activeTasks.length}
+          floatingPosition={state.floatingPosition}
+          onFloatingPositionCommit={commitFloatingPosition}
+          onRestore={() => void setTrackerMinimized(false)}
+        />
       ) : null}
     </div>
   );
@@ -335,6 +349,8 @@ function FloatingTracker({
   activeTasks,
   isExpanded,
   now,
+  floatingPosition,
+  onFloatingPositionCommit,
   onExpand,
   onCollapse,
   onMinimize,
@@ -344,23 +360,42 @@ function FloatingTracker({
   activeTasks: GenerationTask[];
   isExpanded: boolean;
   now: number;
+  floatingPosition: FloatingPosition | null;
+  onFloatingPositionCommit: (position: FloatingPosition) => void;
   onExpand: () => void;
   onCollapse: () => void;
   onMinimize: () => void;
   onEnterMeshy: () => void;
 }) {
   const latestProgress = getTaskProgress(latestTask, now);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const drag = useDraggableFloatingPanel({
+    position: floatingPosition,
+    onCommit: onFloatingPositionCommit,
+    elementRef: shellRef,
+    enabled: true,
+  });
 
   return (
     <div
-      className={`floatingShell ${isExpanded ? "isExpanded" : ""}`}
+      ref={shellRef}
+      className={`floatingShell ${isExpanded ? "isExpanded" : ""}${drag.isDragging ? " isDragging" : ""}`}
+      style={drag.positionStyle}
       onClick={() => {
+        if (drag.suppressClickRef.current) {
+          drag.suppressClickRef.current = false;
+          return;
+        }
         if (isExpanded) {
           onCollapse();
         } else {
           onExpand();
         }
       }}
+      onPointerDown={drag.onPointerDown}
+      onPointerMove={drag.onPointerMove}
+      onPointerUp={drag.onPointerUp}
+      onPointerCancel={drag.onPointerCancel}
     >
       <button
         type="button"
@@ -375,12 +410,24 @@ function FloatingTracker({
       </button>
 
       {!isExpanded ? (
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           className="floatingCompactCard"
           onClick={(event) => {
             event.stopPropagation();
+            if (drag.suppressClickRef.current) {
+              drag.suppressClickRef.current = false;
+              return;
+            }
             onExpand();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              event.stopPropagation();
+              onExpand();
+            }
           }}
         >
           {activeTasks.length > 1 ? <div className="floatingCounter">+{activeTasks.length - 1}</div> : null}
@@ -398,10 +445,10 @@ function FloatingTracker({
             <div className="floatingStatusPercent">{getTaskTimingLabel(latestTask, now)}</div>
             <div className="floatingCompactTitle">{latestTask.title}</div>
           </div>
-        </button>
+        </div>
       ) : (
         <div className="floatingExpandedFrame">
-          <div className="floatingExpandedPanel" onClick={(event) => event.stopPropagation()}>
+          <div className="floatingExpandedPanel">
             <div className="floatingExpandedHeader">
               <div>
                 <div className="eyebrow">In progress</div>
@@ -409,7 +456,6 @@ function FloatingTracker({
                   {activeTasks.length > 0 ? `${activeTasks.length} active tasks` : "Latest result ready"}
                 </div>
               </div>
-              <div className="compactHint">Click outside this panel to collapse</div>
             </div>
 
             <div className="floatingList">
@@ -420,7 +466,11 @@ function FloatingTracker({
                   .map((task) => {
                     const progress = getTaskProgress(task, now);
                     return (
-                      <div key={task.id} className="floatingListItem">
+                      <div
+                        key={task.id}
+                        className="floatingListItem"
+                        onClick={(event) => event.stopPropagation()}
+                      >
                         <div className="floatingListTitle">{task.title}</div>
                         <div className="floatingListProgressRow">
                           <TaskProgressRing progress={progress} size="sm" />
@@ -453,9 +503,47 @@ function FloatingTracker({
   );
 }
 
-function EdgeArrowTab({ activeCount, onRestore }: { activeCount: number; onRestore: () => void }) {
+function EdgeArrowTab({
+  activeCount,
+  floatingPosition,
+  onFloatingPositionCommit,
+  onRestore,
+}: {
+  activeCount: number;
+  floatingPosition: FloatingPosition | null;
+  onFloatingPositionCommit: (position: FloatingPosition) => void;
+  onRestore: () => void;
+}) {
+  const tabRef = useRef<HTMLButtonElement>(null);
+  const drag = useDraggableFloatingPanel({
+    position: floatingPosition,
+    onCommit: onFloatingPositionCommit,
+    elementRef: tabRef,
+    enabled: true,
+  });
+
+  const tabStyle =
+    drag.positionStyle != null ? ({ ...drag.positionStyle, transform: "none" } as const) : undefined;
+
   return (
-    <button type="button" className="edgeArrowTab" onClick={onRestore} aria-label="Open generation tracker">
+    <button
+      ref={tabRef}
+      type="button"
+      className={`edgeArrowTab${drag.isDragging ? " isDragging" : ""}`}
+      style={tabStyle}
+      onPointerDown={drag.onPointerDown}
+      onPointerMove={drag.onPointerMove}
+      onPointerUp={drag.onPointerUp}
+      onPointerCancel={drag.onPointerCancel}
+      onClick={() => {
+        if (drag.suppressClickRef.current) {
+          drag.suppressClickRef.current = false;
+          return;
+        }
+        onRestore();
+      }}
+      aria-label="Open generation tracker"
+    >
       <span className="edgeArrowGlyph">‹</span>
       {activeCount > 0 ? <span className="edgeArrowCount">{activeCount}</span> : null}
     </button>

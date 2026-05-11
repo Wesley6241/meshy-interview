@@ -351,7 +351,16 @@ function FloatingTracker({
   const latestProgress = getTaskProgress(latestTask, now);
 
   return (
-    <div className={`floatingShell ${isExpanded ? "isExpanded" : ""}`} onClick={isExpanded ? onCollapse : undefined}>
+    <div
+      className={`floatingShell ${isExpanded ? "isExpanded" : ""}`}
+      onClick={() => {
+        if (isExpanded) {
+          onCollapse();
+        } else {
+          onExpand();
+        }
+      }}
+    >
       <button
         type="button"
         className="floatingMinimize"
@@ -365,7 +374,14 @@ function FloatingTracker({
       </button>
 
       {!isExpanded ? (
-        <button type="button" className="floatingCompactCard" onClick={onExpand}>
+        <button
+          type="button"
+          className="floatingCompactCard"
+          onClick={(event) => {
+            event.stopPropagation();
+            onExpand();
+          }}
+        >
           {activeTasks.length > 1 ? <div className="floatingCounter">+{activeTasks.length - 1}</div> : null}
           <div className="floatingStatusStack">
             <div className="floatingStatusRingWrap">

@@ -55,6 +55,9 @@
   padding: 3px;
   isolation: isolate;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   border: 1px solid transparent;
   background:
     linear-gradient(var(--float-bg), var(--float-bg)) padding-box,
@@ -68,6 +71,10 @@
     0 6px 14px rgba(0, 0, 0, 0.55);
 }
 
+.contentTrackerRoot .floatingShell:not(.isExpanded) {
+  cursor: pointer;
+}
+
 .contentTrackerRoot .floatingShell.isExpanded {
   width: 143px;
   max-width: min(143px, calc(100vw - 24px));
@@ -75,9 +82,6 @@
   padding: 6px;
   border-radius: 12px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
 }
 
 .contentTrackerRoot .floatingShell.isExpanded .floatingMinimize {
@@ -200,7 +204,9 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
   padding: 6px 5px 5px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;

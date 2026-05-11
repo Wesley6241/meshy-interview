@@ -180,7 +180,7 @@ function MeshyPage({
   onGenerate: () => void;
 }) {
   return (
-    <main className="pageWrap">
+    <main className="pageWrap meshyPage">
       <section className="workspaceFrame">
         <div className="meshLayout">
           <aside className="leftPanel panel">
@@ -366,16 +366,23 @@ function FloatingTracker({
 
       {!isExpanded ? (
         <button type="button" className="floatingCompactCard" onClick={onExpand}>
-          <div className="floatingThumbnail">
-            <div className="floatingRing" style={{ ["--progress" as string]: `${latestProgress}` }} />
-          </div>
-          <div className="floatingCompactMeta">
-            <div className="floatingTitle">{latestTask.title}</div>
-            <div className="floatingSubtitle">
+          {activeTasks.length > 1 ? <div className="floatingCounter">+{activeTasks.length - 1}</div> : null}
+          <div className="floatingStatusStack">
+            <div className="floatingStatusRingWrap">
+              <div
+                className="floatingStatusRing"
+                style={{ ["--progress" as string]: `${latestProgress}` }}
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(latestProgress * 100)}
+              />
+            </div>
+            <div className="floatingStatusPercent">
               {latestTask.status === "done" ? "100%" : `${Math.round(latestProgress * 100)}%`}
             </div>
+            <div className="floatingCompactTitle">{latestTask.title}</div>
           </div>
-          {activeTasks.length > 1 ? <div className="floatingCounter">+{activeTasks.length - 1}</div> : null}
         </button>
       ) : (
         <div className="floatingExpandedFrame">

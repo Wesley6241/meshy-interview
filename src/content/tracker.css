@@ -14,6 +14,11 @@
   --accent-teal: #2dd4bf;
   --accent-purple: #c084fc;
   --ring-track: rgba(255, 255, 255, 0.08);
+  /* Figma: meshy产品题 node 25-151 — linear 0% #C8F45B → 100% #FD9DBF */
+  --figma-lime: #c8f45b;
+  --figma-pink: #fd9dbf;
+  --figma-glow-lime: rgba(200, 244, 91, 0.55);
+  --figma-glow-pink: rgba(253, 157, 191, 0.45);
 }
 
 .contentTrackerRoot *,
@@ -36,44 +41,153 @@
 
 .contentTrackerRoot .eyebrow,
 .contentTrackerRoot .compactHint {
-  font-size: 11px;
+  font-size: 8px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .contentTrackerRoot .floatingShell {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 16px;
+  bottom: 16px;
   z-index: 2147483646;
-  width: 332px;
-  padding: 12px;
+  width: 83px;
+  padding: 3px;
   isolation: isolate;
-  border-radius: 28px;
-  background: var(--float-bg);
-  border: 1px solid var(--border);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--float-bg), var(--float-bg)) padding-box,
+    linear-gradient(90deg, var(--figma-lime) 0%, var(--figma-pink) 100%) border-box;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
   box-shadow:
-    0 0 0 1px rgba(45, 212, 191, 0.08),
-    0 0 28px -6px var(--glow-teal),
-    0 0 40px -10px var(--glow-purple),
-    0 24px 56px rgba(0, 0, 0, 0.55);
+    0 0 6px var(--figma-glow-lime),
+    0 0 10px var(--figma-glow-pink),
+    0 0 16px rgba(253, 157, 191, 0.22),
+    0 6px 14px rgba(0, 0, 0, 0.55);
 }
 
 .contentTrackerRoot .floatingShell.isExpanded {
-  width: 380px;
-  padding: 14px;
+  width: 143px;
+  max-width: min(143px, calc(100vw - 24px));
+  max-height: calc(100vh - 32px);
+  padding: 6px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingMinimize {
+  top: 6px;
+  right: 6px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingExpandedFrame {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingExpandedPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingExpandedHeader {
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .eyebrow,
+.contentTrackerRoot .floatingShell.isExpanded .compactHint {
+  font-size: 12px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingExpandedTitle {
+  font-size: 12px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListTitle {
+  font-size: 12px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListTime {
+  font-size: 11px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingList {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  gap: 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListItem {
+  grid-template-columns: 12px 1fr auto;
+  gap: 5px;
+  padding: 5px 6px;
+  border-radius: 8px;
+}
+
+.contentTrackerRoot .floatingListItem .floatingListMeta {
+  min-width: 0;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListMeta {
+  overflow-wrap: anywhere;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListGlyph {
+  width: 12px;
+  height: 12px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingListProgress {
+  font-size: 14px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .floatingEmptyState {
+  padding: 6px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.contentTrackerRoot .floatingShell.isExpanded .enterMeshyButton {
+  flex-shrink: 0;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
 }
 
 .contentTrackerRoot .floatingMinimize {
   position: absolute;
-  top: 12px;
-  right: 14px;
-  width: 30px;
-  height: 30px;
+  top: 3px;
+  right: 3px;
+  width: 11px;
+  height: 11px;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-soft);
   background: rgba(255, 255, 255, 0.04);
+  font-size: 8px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
 }
 
 .contentTrackerRoot .floatingMinimize:hover {
@@ -82,78 +196,99 @@
 }
 
 .contentTrackerRoot .floatingCompactCard {
-  display: grid;
-  grid-template-columns: 54px 1fr auto;
-  align-items: center;
-  gap: 14px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
-  padding: 14px 16px;
-  border: 0;
-  border-radius: 22px;
+  padding: 6px 5px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
   color: inherit;
-  text-align: left;
-  background: var(--float-inner);
-  border: 1px solid var(--border);
+  text-align: center;
+  background: #1a1a1a;
 }
 
-.contentTrackerRoot .floatingThumbnail {
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
+.contentTrackerRoot .floatingStatusStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
 }
 
-.contentTrackerRoot .floatingRing {
+.contentTrackerRoot .floatingStatusRingWrap {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+}
+
+.contentTrackerRoot .floatingStatusRing {
   --progress: 0;
   position: relative;
-  width: 34px;
-  height: 34px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: conic-gradient(
     from -90deg,
-    var(--accent-teal) 0turn,
-    var(--accent-purple) calc(var(--progress) * 1turn),
-    var(--ring-track) 0
+    #ffffff calc(var(--progress) * 1turn),
+    rgba(255, 255, 255, 0.14) 0
   );
 }
 
-.contentTrackerRoot .floatingRing::after {
+.contentTrackerRoot .floatingStatusRing::after {
   content: "";
   position: absolute;
-  inset: 5px;
+  inset: 2px;
   border-radius: 50%;
-  background: var(--float-bg);
+  background: #1a1a1a;
 }
 
-.contentTrackerRoot .floatingCompactMeta {
-  min-width: 0;
+.contentTrackerRoot .floatingStatusPercent {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #c0d67a;
+  line-height: 1.2;
 }
 
-.contentTrackerRoot .floatingTitle,
-.contentTrackerRoot .floatingSubtitle {
+.contentTrackerRoot .floatingCompactTitle {
+  max-width: 65px;
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.38);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.contentTrackerRoot .floatingTitle,
 .contentTrackerRoot .floatingExpandedTitle,
 .contentTrackerRoot .floatingListTitle {
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-.contentTrackerRoot .floatingTitle {
-  color: #fafafa;
+.contentTrackerRoot .floatingExpandedTitle {
+  font-size: 8px;
+  line-height: 1.25;
+}
+
+.contentTrackerRoot .floatingListTitle {
+  font-size: 8px;
+  line-height: 1.25;
+}
+
+.contentTrackerRoot .floatingListTime {
+  font-size: 7px;
 }
 
 .contentTrackerRoot .floatingCounter {
-  padding: 6px 11px;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 1;
+  padding: 1px 3px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 8px;
   font-weight: 600;
   color: var(--text-soft);
   background: rgba(255, 255, 255, 0.06);
@@ -161,15 +296,15 @@
 }
 
 .contentTrackerRoot .floatingExpandedFrame {
-  min-height: 220px;
-  padding-top: 18px;
+  min-height: 55px;
+  padding-top: 5px;
 }
 
 .contentTrackerRoot .floatingExpandedPanel {
   display: grid;
-  gap: 16px;
-  padding: 18px;
-  border-radius: 22px;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 6px;
   background: var(--float-inner);
   border: 1px solid var(--border);
 }
@@ -178,30 +313,30 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: 3px;
 }
 
 .contentTrackerRoot .floatingList {
   display: grid;
-  gap: 10px;
-  max-height: 280px;
+  gap: 3px;
+  max-height: 70px;
   overflow: auto;
 }
 
 .contentTrackerRoot .floatingListItem {
   display: grid;
-  grid-template-columns: 30px 1fr auto;
+  grid-template-columns: 8px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 3px;
+  padding: 3px 4px;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .contentTrackerRoot .floatingListGlyph {
-  width: 30px;
-  height: 30px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(45, 212, 191, 0.55), rgba(168, 85, 247, 0.5));
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -209,34 +344,38 @@
 
 .contentTrackerRoot .floatingListProgress {
   color: var(--accent-teal);
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 600;
 }
 
 .contentTrackerRoot .floatingEmptyState {
-  padding: 16px;
+  padding: 4px;
   border: 1px dashed var(--border-strong);
-  border-radius: 18px;
+  border-radius: 5px;
   color: var(--text-muted);
-  line-height: 1.6;
-  font-size: 13px;
+  line-height: 1.5;
+  font-size: 8px;
 }
 
 .contentTrackerRoot .enterMeshyButton {
-  border: 1px solid var(--border-strong);
-  border-radius: 20px;
-  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px 5px;
+  font-size: 8px;
   color: #fafafa;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 20px -8px var(--glow-teal);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)) padding-box,
+    linear-gradient(90deg, var(--figma-lime) 0%, var(--figma-pink) 100%) border-box;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
 }
 
 .contentTrackerRoot .enterMeshyButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 0 24px -6px var(--glow-teal),
-    0 0 32px -10px var(--glow-purple);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14)) padding-box,
+    linear-gradient(90deg, var(--figma-lime) 0%, var(--figma-pink) 100%) border-box;
+  background-clip: padding-box, border-box;
 }
 
 .contentTrackerRoot .edgeArrowTab {
@@ -246,28 +385,32 @@
   z-index: 2147483645;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 12px 14px 16px;
-  border: 1px solid var(--border);
+  gap: 3px;
+  padding: 4px 3px 4px 5px;
+  border: 1px solid transparent;
   border-right: 0;
-  border-radius: 20px 0 0 20px;
+  border-radius: 6px 0 0 6px;
   color: #f5f5f5;
-  background: var(--float-bg);
+  background:
+    linear-gradient(var(--float-bg), var(--float-bg)) padding-box,
+    linear-gradient(180deg, var(--figma-lime) 0%, var(--figma-pink) 100%) border-box;
+  background-clip: padding-box, border-box;
   transform: translateY(-50%);
   box-shadow:
-    0 0 24px -8px var(--glow-teal),
-    0 0 36px -12px var(--glow-purple),
-    0 16px 40px rgba(0, 0, 0, 0.45);
+    -2px 0 6px var(--figma-glow-lime),
+    -1px 0 9px var(--figma-glow-pink),
+    0 4px 10px rgba(0, 0, 0, 0.45);
 }
 
 .contentTrackerRoot .edgeArrowGlyph {
-  font-size: 24px;
+  font-size: 10px;
   line-height: 1;
 }
 
 .contentTrackerRoot .edgeArrowCount {
-  min-width: 24px;
-  padding: 4px 8px;
+  min-width: 12px;
+  padding: 1px 3px;
+  font-size: 8px;
   border-radius: 999px;
   color: var(--text-soft);
   background: rgba(255, 255, 255, 0.06);
@@ -275,10 +418,13 @@
 }
 
 @media (max-width: 640px) {
-  .contentTrackerRoot .floatingShell,
+  .contentTrackerRoot .floatingShell {
+    right: 10px;
+    bottom: 10px;
+    width: min(calc(100vw - 20px), 83px);
+  }
+
   .contentTrackerRoot .floatingShell.isExpanded {
-    right: 12px;
-    bottom: 12px;
-    width: min(calc(100vw - 24px), 360px);
+    width: min(calc(100vw - 20px), 143px);
   }
 }

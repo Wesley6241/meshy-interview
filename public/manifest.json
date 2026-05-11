@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Global Generation Task Tracker Demo",
+  "description": "Cross-website generation tracker demo for Chrome and Edge.",
+  "version": "0.0.1",
+  "permissions": ["storage", "alarms", "tabs"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "action": {
+    "default_title": "Meshy Tracker",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "assets/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["assets/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

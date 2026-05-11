@@ -1,0 +1,240 @@
+.contentTrackerRoot {
+  all: initial;
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f4f6f8;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text-soft: rgba(234, 239, 245, 0.72);
+  --lime: #c8ff3d;
+  --pink: #f8a6d9;
+  --shadow: 0 22px 50px rgba(0, 0, 0, 0.4);
+}
+
+.contentTrackerRoot *,
+.contentTrackerRoot *::before,
+.contentTrackerRoot *::after {
+  box-sizing: border-box;
+}
+
+.contentTrackerRoot button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.contentTrackerRoot .eyebrow,
+.contentTrackerRoot .compactHint,
+.contentTrackerRoot .floatingListTime,
+.contentTrackerRoot .floatingSubtitle {
+  color: var(--text-soft);
+}
+
+.contentTrackerRoot .eyebrow,
+.contentTrackerRoot .compactHint {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.contentTrackerRoot .floatingShell {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 2147483646;
+  width: 332px;
+  padding: 10px;
+  border: 1px solid rgba(200, 255, 61, 0.16);
+  border-radius: 24px;
+  background: rgba(12, 14, 18, 0.84);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.contentTrackerRoot .floatingShell.isExpanded {
+  width: 380px;
+  padding: 14px;
+}
+
+.contentTrackerRoot .floatingMinimize {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.contentTrackerRoot .floatingCompactCard {
+  display: grid;
+  grid-template-columns: 54px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 18px;
+  color: inherit;
+  text-align: left;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(200, 255, 61, 0.04));
+}
+
+.contentTrackerRoot .floatingThumbnail {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.contentTrackerRoot .floatingRing {
+  --progress: 0;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: conic-gradient(var(--lime) calc(var(--progress) * 1turn), rgba(255, 255, 255, 0.08) 0);
+}
+
+.contentTrackerRoot .floatingRing::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #121317;
+}
+
+.contentTrackerRoot .floatingCompactMeta {
+  min-width: 0;
+}
+
+.contentTrackerRoot .floatingTitle,
+.contentTrackerRoot .floatingSubtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contentTrackerRoot .floatingTitle,
+.contentTrackerRoot .floatingExpandedTitle,
+.contentTrackerRoot .floatingListTitle {
+  font-weight: 600;
+}
+
+.contentTrackerRoot .floatingCounter {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--lime);
+  background: rgba(200, 255, 61, 0.12);
+}
+
+.contentTrackerRoot .floatingExpandedFrame {
+  min-height: 220px;
+  padding-top: 16px;
+}
+
+.contentTrackerRoot .floatingExpandedPanel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(26, 28, 36, 0.98), rgba(16, 18, 23, 0.98));
+}
+
+.contentTrackerRoot .floatingExpandedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.contentTrackerRoot .floatingList {
+  display: grid;
+  gap: 10px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.contentTrackerRoot .floatingListItem {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.contentTrackerRoot .floatingListGlyph {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(200, 255, 61, 0.85), rgba(248, 166, 217, 0.72));
+}
+
+.contentTrackerRoot .floatingListProgress {
+  color: var(--lime);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.contentTrackerRoot .floatingEmptyState {
+  padding: 14px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 16px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.contentTrackerRoot .enterMeshyButton {
+  border: 0;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #11150d;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--lime), #efffa5);
+}
+
+.contentTrackerRoot .edgeArrowTab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 2147483645;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px 14px 16px;
+  border: 1px solid rgba(200, 255, 61, 0.14);
+  border-right: 0;
+  border-radius: 18px 0 0 18px;
+  color: #f3f6ef;
+  background: rgba(12, 14, 18, 0.94);
+  transform: translateY(-50%);
+  box-shadow: var(--shadow);
+}
+
+.contentTrackerRoot .edgeArrowGlyph {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.contentTrackerRoot .edgeArrowCount {
+  min-width: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--lime);
+  background: rgba(200, 255, 61, 0.12);
+}
+
+@media (max-width: 640px) {
+  .contentTrackerRoot .floatingShell,
+  .contentTrackerRoot .floatingShell.isExpanded {
+    right: 12px;
+    bottom: 12px;
+    width: min(calc(100vw - 24px), 360px);
+  }
+}

@@ -371,7 +371,9 @@ function FloatingTracker({
           </div>
           <div className="floatingCompactMeta">
             <div className="floatingTitle">{latestTask.title}</div>
-            <div className="floatingSubtitle">{getTaskTimingLabel(latestTask, now)}</div>
+            <div className="floatingSubtitle">
+              {latestTask.status === "done" ? "100%" : `${Math.round(latestProgress * 100)}%`}
+            </div>
           </div>
           {activeTasks.length > 1 ? <div className="floatingCounter">+{activeTasks.length - 1}</div> : null}
         </button>

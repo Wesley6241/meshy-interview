@@ -17,10 +17,28 @@ async function syncDueTasks() {
   const result = completeDueTasks(currentState);
 
   if (result.changed) {
-    await setTrackerState(result.state);
+    await persistState(result.state);
   }
 
   return result.state;
+}
+
+async function broadcastState() {
+  const state = await getTrackerState();
+  try {
+    await chrome.runtime.sendMessage({
+      type: "TRACKER_STATE_UPDATED",
+      state,
+    });
+  } catch {
+    // Ignore when no extension page is actively listening.
+  }
+  return state;
+}
+
+async function persistState(state: Awaited<ReturnType<typeof getTrackerState>>) {
+  await setTrackerState(state);
+  await broadcastState();
 }
 
 async function scheduleTaskAlarm(taskId: string, targetCompleteAt: number) {
@@ -32,7 +50,7 @@ async function scheduleTaskAlarm(taskId: string, targetCompleteAt: number) {
 async function createBackgroundTask() {
   const currentState = await getTrackerState();
   const result = createTask(currentState);
-  await setTrackerState(result.state);
+  await persistState(result.state);
   await scheduleTaskAlarm(result.task.id, result.task.targetCompleteAt);
   return result.task;
 }
@@ -40,7 +58,7 @@ async function createBackgroundTask() {
 async function completeBackgroundTask(taskId: string) {
   const currentState = await getTrackerState();
   const nextState = completeTask(currentState, taskId);
-  await setTrackerState(nextState);
+  await persistState(nextState);
 }
 
 async function openMeshyPage() {
@@ -104,6 +122,32 @@ chrome.runtime.onMessage.addListener((
       case "SYNC_DUE_TASKS": {
         const state = await syncDueTasks();
         sendResponse({ state });
+        return;
+      }
+      case "GET_TRACKER_STATE": {
+        const state = await getTrackerState();
+        sendResponse({ state });
+        return;
+      }
+      case "SET_TRACKER_MINIMIZED": {
+        const state = await getTrackerState();
+        const nextState = {
+          ...state,
+          trackerMinimized: Boolean((message as { minimized?: boolean }).minimized),
+          floatingExpanded: (message as { minimized?: boolean }).minimized ? false : state.floatingExpanded,
+        };
+        await persistState(nextState);
+        sendResponse({ state: nextState });
+        return;
+      }
+      case "SET_FLOATING_EXPANDED": {
+        const state = await getTrackerState();
+        const nextState = {
+          ...state,
+          floatingExpanded: Boolean((message as { expanded?: boolean }).expanded),
+        };
+        await persistState(nextState);
+        sendResponse({ state: nextState });
         return;
       }
       default:

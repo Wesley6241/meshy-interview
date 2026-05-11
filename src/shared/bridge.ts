@@ -1,10 +1,14 @@
 import { createTask, type GenerationTask } from "./tracker";
 import { setTrackerState, updateTrackerState } from "./storage";
+import type { TrackerState } from "./tracker";
 
 type ExtensionMessage =
   | { type: "CREATE_TASK" }
   | { type: "OPEN_MESHY" }
-  | { type: "SYNC_DUE_TASKS" };
+  | { type: "SYNC_DUE_TASKS" }
+  | { type: "GET_TRACKER_STATE" }
+  | { type: "SET_TRACKER_MINIMIZED"; minimized: boolean }
+  | { type: "SET_FLOATING_EXPANDED"; expanded: boolean };
 
 const localTimeoutMap = new Map<string, number>();
 
@@ -74,7 +78,21 @@ export async function requestDueTaskSync() {
   }
 }
 
+export async function fetchTrackerState() {
+  if (hasRuntime()) {
+    const response = await sendMessage<{ state: TrackerState }>({ type: "GET_TRACKER_STATE" });
+    return response.state;
+  }
+
+  return updateTrackerState((state) => state);
+}
+
 export async function setTrackerMinimized(minimized: boolean) {
+  if (hasRuntime()) {
+    await sendMessage({ type: "SET_TRACKER_MINIMIZED", minimized });
+    return;
+  }
+
   await updateTrackerState((state) => ({
     ...state,
     trackerMinimized: minimized,
@@ -83,6 +101,11 @@ export async function setTrackerMinimized(minimized: boolean) {
 }
 
 export async function setFloatingExpanded(expanded: boolean) {
+  if (hasRuntime()) {
+    await sendMessage({ type: "SET_FLOATING_EXPANDED", expanded });
+    return;
+  }
+
   await updateTrackerState((state) => ({
     ...state,
     floatingExpanded: expanded,

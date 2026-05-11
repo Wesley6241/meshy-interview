@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchTrackerState } from "./bridge";
 import { DEFAULT_TRACKER_STATE, type TrackerState } from "./tracker";
 import { getTrackerState, subscribeTrackerState } from "./storage";
 
@@ -9,7 +10,7 @@ export function useTrackerState() {
   useEffect(() => {
     let isMounted = true;
 
-    void getTrackerState().then((nextState) => {
+    void fetchTrackerState().then((nextState) => {
       if (!isMounted) {
         return;
       }
@@ -23,9 +24,25 @@ export function useTrackerState() {
       setIsReady(true);
     });
 
+    const handleRuntimeMessage = (message: { type?: string; state?: TrackerState }) => {
+      if (!isMounted || message.type !== "TRACKER_STATE_UPDATED" || !message.state) {
+        return;
+      }
+
+      setState(message.state);
+      setIsReady(true);
+    };
+
+    if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
+      chrome.runtime.onMessage.addListener(handleRuntimeMessage);
+    }
+
     return () => {
       isMounted = false;
       unsubscribe();
+      if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
+        chrome.runtime.onMessage.removeListener(handleRuntimeMessage);
+      }
     };
   }, []);
 

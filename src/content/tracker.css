@@ -2,13 +2,18 @@
   all: initial;
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #f4f6f8;
-  --border: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --text-soft: rgba(234, 239, 245, 0.72);
-  --lime: #c8ff3d;
-  --pink: #f8a6d9;
-  --shadow: 0 22px 50px rgba(0, 0, 0, 0.4);
+  color: #f5f5f5;
+  --float-bg: #0a0a0a;
+  --float-inner: #111111;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text-soft: rgba(245, 245, 245, 0.45);
+  --text-muted: rgba(245, 245, 245, 0.38);
+  --glow-teal: rgba(45, 212, 191, 0.35);
+  --glow-purple: rgba(168, 85, 247, 0.32);
+  --accent-teal: #2dd4bf;
+  --accent-purple: #c084fc;
+  --ring-track: rgba(255, 255, 255, 0.08);
 }
 
 .contentTrackerRoot *,
@@ -42,12 +47,16 @@
   bottom: 24px;
   z-index: 2147483646;
   width: 332px;
-  padding: 10px;
-  border: 1px solid rgba(200, 255, 61, 0.16);
-  border-radius: 24px;
-  background: rgba(12, 14, 18, 0.84);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow);
+  padding: 12px;
+  isolation: isolate;
+  border-radius: 28px;
+  background: var(--float-bg);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgba(45, 212, 191, 0.08),
+    0 0 28px -6px var(--glow-teal),
+    0 0 40px -10px var(--glow-purple),
+    0 24px 56px rgba(0, 0, 0, 0.55);
 }
 
 .contentTrackerRoot .floatingShell.isExpanded {
@@ -57,14 +66,19 @@
 
 .contentTrackerRoot .floatingMinimize {
   position: absolute;
-  top: 10px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  border: 0;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-soft);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.contentTrackerRoot .floatingMinimize:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f5;
 }
 
 .contentTrackerRoot .floatingCompactCard {
@@ -73,12 +87,13 @@
   align-items: center;
   gap: 14px;
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 0;
-  border-radius: 18px;
+  border-radius: 22px;
   color: inherit;
   text-align: left;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(200, 255, 61, 0.04));
+  background: var(--float-inner);
+  border: 1px solid var(--border);
 }
 
 .contentTrackerRoot .floatingThumbnail {
@@ -86,8 +101,9 @@
   place-items: center;
   width: 54px;
   height: 54px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
 }
 
 .contentTrackerRoot .floatingRing {
@@ -96,7 +112,12 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: conic-gradient(var(--lime) calc(var(--progress) * 1turn), rgba(255, 255, 255, 0.08) 0);
+  background: conic-gradient(
+    from -90deg,
+    var(--accent-teal) 0turn,
+    var(--accent-purple) calc(var(--progress) * 1turn),
+    var(--ring-track) 0
+  );
 }
 
 .contentTrackerRoot .floatingRing::after {
@@ -104,7 +125,7 @@
   position: absolute;
   inset: 5px;
   border-radius: 50%;
-  background: #121317;
+  background: var(--float-bg);
 }
 
 .contentTrackerRoot .floatingCompactMeta {
@@ -122,26 +143,35 @@
 .contentTrackerRoot .floatingExpandedTitle,
 .contentTrackerRoot .floatingListTitle {
   font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.contentTrackerRoot .floatingTitle {
+  color: #fafafa;
 }
 
 .contentTrackerRoot .floatingCounter {
-  padding: 6px 10px;
+  padding: 6px 11px;
   border-radius: 999px;
-  color: var(--lime);
-  background: rgba(200, 255, 61, 0.12);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
 }
 
 .contentTrackerRoot .floatingExpandedFrame {
   min-height: 220px;
-  padding-top: 16px;
+  padding-top: 18px;
 }
 
 .contentTrackerRoot .floatingExpandedPanel {
   display: grid;
-  gap: 14px;
-  padding: 16px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(26, 28, 36, 0.98), rgba(16, 18, 23, 0.98));
+  gap: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  background: var(--float-inner);
+  border: 1px solid var(--border);
 }
 
 .contentTrackerRoot .floatingExpandedHeader {
@@ -163,40 +193,50 @@
   grid-template-columns: 30px 1fr auto;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 14px;
   border: 1px solid var(--border);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .contentTrackerRoot .floatingListGlyph {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(200, 255, 61, 0.85), rgba(248, 166, 217, 0.72));
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.55), rgba(168, 85, 247, 0.5));
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .contentTrackerRoot .floatingListProgress {
-  color: var(--lime);
+  color: var(--accent-teal);
   font-size: 13px;
   font-weight: 600;
 }
 
 .contentTrackerRoot .floatingEmptyState {
-  padding: 14px;
+  padding: 16px;
   border: 1px dashed var(--border-strong);
-  border-radius: 16px;
-  color: var(--text-soft);
+  border-radius: 18px;
+  color: var(--text-muted);
   line-height: 1.6;
+  font-size: 13px;
 }
 
 .contentTrackerRoot .enterMeshyButton {
-  border: 0;
-  border-radius: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
   padding: 14px 16px;
-  color: #11150d;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--lime), #efffa5);
+  color: #fafafa;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px -8px var(--glow-teal);
+}
+
+.contentTrackerRoot .enterMeshyButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 24px -6px var(--glow-teal),
+    0 0 32px -10px var(--glow-purple);
 }
 
 .contentTrackerRoot .edgeArrowTab {
@@ -208,13 +248,16 @@
   align-items: center;
   gap: 10px;
   padding: 14px 12px 14px 16px;
-  border: 1px solid rgba(200, 255, 61, 0.14);
+  border: 1px solid var(--border);
   border-right: 0;
-  border-radius: 18px 0 0 18px;
-  color: #f3f6ef;
-  background: rgba(12, 14, 18, 0.94);
+  border-radius: 20px 0 0 20px;
+  color: #f5f5f5;
+  background: var(--float-bg);
   transform: translateY(-50%);
-  box-shadow: var(--shadow);
+  box-shadow:
+    0 0 24px -8px var(--glow-teal),
+    0 0 36px -12px var(--glow-purple),
+    0 16px 40px rgba(0, 0, 0, 0.45);
 }
 
 .contentTrackerRoot .edgeArrowGlyph {
@@ -226,8 +269,9 @@
   min-width: 24px;
   padding: 4px 8px;
   border-radius: 999px;
-  color: var(--lime);
-  background: rgba(200, 255, 61, 0.12);
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
 }
 
 @media (max-width: 640px) {
